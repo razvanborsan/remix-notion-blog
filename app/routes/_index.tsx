@@ -1,5 +1,11 @@
 import { json, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 
 import { getPublicPosts } from "~/models/post.server";
 
@@ -27,26 +33,17 @@ export default function Index() {
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h2 className="text-3xl font-bold underline">Blog posts</h2>
+      <h2 className="text-3xl font-bold p-4">My blog</h2>
       {posts.map((post) => {
         return (
-          <article className="p-4 border-2" key={post.id}>
-            <a href={post.url}>
-              <h3>{post.title}</h3>
-            </a>
-
-            <p>{post.abstract}</p>
-            {post?.image && (
-              <img
-                className="w-20 h-20"
-                src={post.image?.source?.url}
-                alt={post.image?.alt}
-              />
-            )}
-            <ul>
-              <li>Published: {post.publishDate}</li>
-            </ul>
-          </article>
+          <a key={post.id} href={post.url}>
+            <Card className="m-4">
+              <CardHeader>
+                <CardTitle>{post.title}</CardTitle>
+                <CardDescription>{post.abstract}</CardDescription>
+              </CardHeader>
+            </Card>
+          </a>
         );
       })}
     </div>

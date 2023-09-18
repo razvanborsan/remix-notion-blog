@@ -17,6 +17,7 @@ export async function loader({ params }: LoaderArgs) {
   invariant(params?.slug, "No slug provided");
 
   const post = await getPost(params.slug);
+  invariant(post, "Post not found");
 
   const html = marked(post);
   return json({ html });
@@ -26,7 +27,7 @@ export default function PostRoute() {
   const { html } = useLoaderData<typeof loader>();
 
   return (
-    <main>
+    <main className="flex flex-col justify-center items-center p-4">
       <div dangerouslySetInnerHTML={{ __html: html }} />
     </main>
   );
