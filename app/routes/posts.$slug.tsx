@@ -7,6 +7,12 @@ import invariant from "tiny-invariant";
 
 import { getPost } from "~/models/post.server";
 
+export function headers() {
+  return {
+    "Cache-Control": `public, max-age=600, s-maxage=600 stale-while-revalidate=604800`,
+  };
+}
+
 export async function loader({ params }: LoaderArgs) {
   invariant(params?.slug, "No slug provided");
 

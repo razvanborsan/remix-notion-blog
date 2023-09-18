@@ -1,7 +1,7 @@
 import { json, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-import { createPostsMarkdown, getPublicPosts } from "~/models/post.server";
+import { getPublicPosts } from "~/models/post.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,9 +10,14 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export function headers() {
+  return {
+    "Cache-Control": `public, max-age=600, s-maxage=600, stale-while-revalidate=604800`,
+  };
+}
+
 export async function loader() {
   const posts = await getPublicPosts();
-  await createPostsMarkdown(posts);
 
   return json({ posts });
 }
