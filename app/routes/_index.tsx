@@ -1,12 +1,18 @@
 import { json, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import {
+  EnvelopeSimple,
+  GithubLogo,
+  LinkedinLogo,
+  TwitterLogo,
+} from "@phosphor-icons/react";
+
+import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-
 import { getPublicPosts } from "~/models/post.server";
 
 export const meta: MetaFunction = () => {
@@ -32,20 +38,47 @@ export default function Index() {
   const { posts } = useLoaderData<typeof loader>();
 
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h2 className="text-3xl font-bold p-4">My blog</h2>
-      {posts.map((post) => {
-        return (
-          <a key={post.id} href={post.url}>
-            <Card className="m-4">
-              <CardHeader>
-                <CardTitle>{post.title}</CardTitle>
-                <CardDescription>{post.abstract}</CardDescription>
-              </CardHeader>
-            </Card>
-          </a>
-        );
-      })}
+    <div
+      className="p-6 md:p-8 lg:p-12 w-full xl:w-[1080px] flex flex-col justify-center items-start gap-6"
+      style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}
+    >
+      <main className="flex flex-col justify-center items-start xl:items-center w-full">
+        <article className="flex flex-col justify-center items-start gap-5 p-6 xl:p-8">
+          <h2 className="text-3xl font-bold">Hi there 🤙</h2>
+
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+            culpa qui officia deserunt mollit anim id est laborum.
+          </p>
+
+          <div className="flex gap-2">
+            <GithubLogo size={32} />
+            <LinkedinLogo size={32} />
+            <TwitterLogo size={32} />
+            <EnvelopeSimple size={32} />
+          </div>
+        </article>
+
+        <div className="w-full flex flex-col gap-4">
+          {posts.map((post) => {
+            return (
+              <a key={post.id} href={post.url}>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>{post.title}</CardTitle>
+                    <CardDescription>{post.abstract}</CardDescription>
+                  </CardHeader>
+                </Card>
+              </a>
+            );
+          })}
+        </div>
+      </main>
     </div>
   );
 }

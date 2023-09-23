@@ -11,6 +11,8 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
+import Header from "~/components/header";
+
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -25,11 +27,16 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="bg-slate-50">
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
+      <body className="bg-[#F2F1F0] flex flex-col justify-center items-center">
+        <div className="xl:w-[1080px]">
+          <Header />
+          <div className="flex flex-col justify-center items-center">
+            <Outlet />
+            <ScrollRestoration />
+            <Scripts />
+            <LiveReload />
+          </div>
+        </div>
       </body>
     </html>
   );
