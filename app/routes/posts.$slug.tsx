@@ -27,7 +27,7 @@ export default function PostRoute() {
   const { html } = useLoaderData<typeof loader>();
 
   return (
-    <main className="flex flex-col justify-center items-center p-6">
+    <main className="mx-auto max-w-[960px] p-4 prose prose-lg">
       <div dangerouslySetInnerHTML={{ __html: html }} />
     </main>
   );

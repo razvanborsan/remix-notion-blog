@@ -22,12 +22,16 @@ export default function App() {
   return (
     <html lang="en">
       <head>
+        <link
+          rel="stylesheet"
+          href="https://use.typekit.net/gfn4xxg.css"
+        ></link>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body className="bg-[#F2F1F0] flex flex-col justify-center items-center">
+      <body className="bg-white flex flex-col justify-center items-center">
         <div className="xl:w-[1080px]">
           <Header />
           <div className="flex flex-col justify-center items-center">
