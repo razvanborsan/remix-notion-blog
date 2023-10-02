@@ -1,9 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 @layer base {
-  /* Use a modern sans-serif font stack similar to Notion */
   body {
     font-family: "kandin", Arial, sans-serif;
     font-weight: 400;
@@ -12,7 +10,6 @@
     color: #000;
   }
 
-  /* Style headings for hierarchy similar to Notion */
   h1,
   h2,
   h3,
@@ -21,66 +18,21 @@
   h6 {
     font-family: "open-sans", Arial, sans-serif;
     font-weight: 700;
-  }
-
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-
-  h2 {
-    font-size: 2rem;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-  }
-
-  h3 {
-    font-size: 1.5rem;
-    margin-top: 1.5rem;
     margin-bottom: 0.75rem;
   }
 
-  /* Style links with Notion-like color */
   a {
-    color: #0070f3; /* Notion's link color */
+    color: #3498db; /* Change to your preferred link color */
     text-decoration: none;
     transition: color 0.2s ease-in-out;
   }
-
   a:hover {
-    color: #0056b3; /* Slightly darker on hover */
-  }
-
-  /* Add spacing to paragraphs and lists similar to Notion */
-  p,
-  ul,
-  ol,
-  dl {
-    margin-bottom: 1rem;
-  }
-
-  /* Style blockquotes similar to Notion */
-  blockquote {
-    border-left: 4px solid #d3dce6; /* Notion's blockquote color */
-    padding: 1rem;
-    margin: 1rem 0;
-    background-color: #f0f2f5; /* Notion's blockquote background color */
-  }
-
-  /* Style code blocks similar to Notion */
-  pre {
-    background-color: #f6f8fa; /* Notion's code block background color */
-    padding: 1rem;
-    border-radius: 0.25rem;
-    overflow-x: auto;
-    font-family: "Courier New", monospace;
-  }
-
-  code {
-    font-family: "Courier New", monospace;
+    color: #2980b9; /* Change to your preferred link hover color */
   }
 
   p {
+    margin-bottom: 1.25rem;
+
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -89,5 +41,45 @@
   img {
     max-width: 30rem;
     margin: auto;
+  }
+
+  blockquote {
+    border-left: 4px solid #007bff; /* Blockquote color */
+    padding-left: 1rem;
+    margin: 1rem 0;
+  }
+
+  /* Lists */
+  ul,
+  ol {
+    list-style: none;
+  }
+
+  /* Preformatted text/code */
+  pre {
+    background-color: #f5f5f5;
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+}
+
+/* General Layout */
+@layer base {
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  main {
+    padding: 20px;
+  }
+
+  footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
   }
 }

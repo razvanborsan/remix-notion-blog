@@ -44,7 +44,7 @@ export default function Index() {
     >
       <main className="flex flex-col justify-center items-start xl:items-center w-full">
         <article className="flex flex-col justify-center items-start gap-5 p-6 xl:p-8 pt-0 xl:pt-0">
-          <div className="bg-slate-50 border p-5 rounded-xl">
+          <div className="bg-slate-50 border p-8 rounded-xl">
             <h2 className="text-3xl font-bold">Nice to meet you! 🤙</h2>
 
             <p>
