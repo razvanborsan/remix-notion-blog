@@ -13,7 +13,8 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { getPublicPosts } from "~/models/post.server";
+import { Badge } from "~/components/ui/badge";
+import { getPublicPosts, getTags } from "~/models/post.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -30,12 +31,13 @@ export function headers() {
 
 export async function loader() {
   const posts = await getPublicPosts();
+  const tags = await getTags();
 
-  return json({ posts });
+  return json({ posts, tags });
 }
 
 export default function Index() {
-  const { posts } = useLoaderData<typeof loader>();
+  const { posts, tags } = useLoaderData<typeof loader>();
 
   return (
     <div
@@ -66,6 +68,13 @@ export default function Index() {
         </article>
 
         <div className="w-full flex flex-col gap-4">
+          <div className="flex gap-2">
+            {tags.map((tag) => (
+              <Badge variant={tag} key={tag}>
+                {tag}
+              </Badge>
+            ))}
+          </div>
           {posts.map((post) => {
             return (
               <a key={post.id} href={post.url}>

@@ -51,6 +51,32 @@ export async function getPublicPosts(): Promise<BlogPost[]> {
   return posts;
 }
 
+export async function getTags(): Promise<string[]> {
+  const raws = await notion.databases.query({
+    database_id: process.env.NOTION_DATABASE_ID || "",
+    filter: {
+      property: "public",
+      checkbox: {
+        equals: true,
+      },
+    },
+    sorts: [
+      {
+        property: "date",
+        direction: "descending",
+      },
+    ],
+  });
+
+  const tags = [];
+
+  raws.results.forEach((page) =>
+    page.properties.tags.multi_select.forEach((tag) => tags.push(tag.name))
+  );
+
+  return [...new Set(tags)];
+}
+
 export const getPost = async (slug: string) => {
   const command = new GetObjectCommand({
     Bucket: "remix-notion-blog",
