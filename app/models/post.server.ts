@@ -1,6 +1,6 @@
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { S3 } from "~/lib/r2.server";
-import type { BlogPost } from "~/types/BlogPost";
+import type { BlogPost, Tag } from "~/types/BlogPost";
 import { blogPostSchema } from "~/types/BlogPost";
 import notion from "~/lib/notion";
 import type { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
@@ -10,6 +10,10 @@ export async function sanitizePosts(
 ): Promise<BlogPost[]> {
   const posts: BlogPost[] = await Promise.all(
     response.results.map(async (item: any) => {
+      const tags = item.properties?.tags?.multi_select.map((tag: any) => ({
+        name: tag.name,
+        color: tag.color,
+      }));
       const title = item.properties?.page?.title?.[0]?.plain_text;
       const slug = item.properties?.slug?.rich_text?.[0]?.plain_text;
       const abstract = item.properties?.abstract?.rich_text?.[0].plain_text;
@@ -20,6 +24,7 @@ export async function sanitizePosts(
         id: item.id,
         title: title,
         slug: slug,
+        tags: tags,
         abstract: abstract,
         url: `/posts/${url}`,
         publishDate: publishDate,
@@ -51,7 +56,7 @@ export async function getPublicPosts(): Promise<BlogPost[]> {
   return posts;
 }
 
-export async function getTags(): Promise<string[]> {
+export async function getTags(): Promise<Tag[]> {
   const raws = await notion.databases.query({
     database_id: process.env.NOTION_DATABASE_ID || "",
     filter: {
@@ -68,13 +73,15 @@ export async function getTags(): Promise<string[]> {
     ],
   });
 
-  const tags = [];
+  const tags = new Map();
 
-  raws.results.forEach((page) =>
-    page.properties.tags.multi_select.forEach((tag) => tags.push(tag.name))
+  raws.results.forEach((page: any) =>
+    page.properties.tags.multi_select.forEach((tag: Tag) =>
+      tags.set(tag.name, tag)
+    )
   );
 
-  return [...new Set(tags)];
+  return Array.from(tags.values());
 }
 
 export const getPost = async (slug: string) => {

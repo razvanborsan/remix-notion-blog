@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { json, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import {
@@ -13,8 +14,10 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import type { BadgeVariant } from "~/components/ui/badge";
 import { Badge } from "~/components/ui/badge";
 import { getPublicPosts, getTags } from "~/models/post.server";
+import type { BlogPost, Tag } from "~/types/BlogPost";
 
 export const meta: MetaFunction = () => {
   return [
@@ -38,6 +41,26 @@ export async function loader() {
 
 export default function Index() {
   const { posts, tags } = useLoaderData<typeof loader>();
+
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  function filterByTags(posts: BlogPost[]): BlogPost[] {
+    if (selectedTags.length === 0) {
+      return posts;
+    }
+
+    return posts.filter((post) => {
+      return post.tags.some((tag) => selectedTags.includes(tag.name));
+    });
+  }
+
+  const handleBadgeClick = (tag: Tag) => () => {
+    if (selectedTags.includes(tag.name)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag.name));
+      return;
+    }
+    setSelectedTags([...selectedTags, tag.name]);
+  };
 
   return (
     <div
@@ -70,23 +93,29 @@ export default function Index() {
         <div className="w-full flex flex-col gap-4">
           <div className="flex gap-2">
             {tags.map((tag) => (
-              <Badge variant={tag} key={tag}>
-                {tag}
+              <Badge
+                variant={
+                  `${tag.color}${
+                    selectedTags.includes(tag.name) ? "-active" : ""
+                  }` as BadgeVariant
+                }
+                key={tag.name}
+                onClick={handleBadgeClick(tag)}
+              >
+                {tag.name}
               </Badge>
             ))}
           </div>
-          {posts.map((post) => {
-            return (
-              <a key={post.id} href={post.url}>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>{post.title}</CardTitle>
-                    <CardDescription>{post.abstract}</CardDescription>
-                  </CardHeader>
-                </Card>
-              </a>
-            );
-          })}
+          {filterByTags(posts).map((post) => (
+            <a key={post.id} href={post.url}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>{post.title}</CardTitle>
+                  <CardDescription>{post.abstract}</CardDescription>
+                </CardHeader>
+              </Card>
+            </a>
+          ))}
         </div>
       </main>
     </div>
