@@ -18,17 +18,28 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   const post = await getPost(params.slug);
   invariant(post, "Post not found");
+  invariant(post.content, "Post content is empty");
 
-  const html = marked(post);
-  return json({ html });
+  const html = marked(post.content);
+  const updatedPost = { ...post, content: html };
+
+  return json({ post: updatedPost });
 }
 
 export default function PostRoute() {
-  const { html } = useLoaderData<typeof loader>();
+  const { post } = useLoaderData<typeof loader>();
 
   return (
     <main className="mx-auto max-w-[960px] p-10 prose prose-lg">
-      <div dangerouslySetInnerHTML={{ __html: html }} />
+      <h1 className="mb-4">{post.title}</h1>
+      <p className="text-sm text-gray-500 mb-2">
+        {post.publishDate} • {post.readingTime}{" "}
+        {post.readingTime === 1 ? "min" : "mins"} • {post.wordCount} words
+      </p>
+      <p className="text-sm text-gray-500 italic">
+        Last edited: {post.lastEdited}
+      </p>
+      <div dangerouslySetInnerHTML={{ __html: post.content }} />
     </main>
   );
 }

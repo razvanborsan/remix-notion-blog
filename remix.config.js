@@ -7,5 +7,4 @@ module.exports = {
   // publicPath: "/build/",
   serverModuleFormat: "cjs",
   tailwind: true,
-  postcss: true,
 };

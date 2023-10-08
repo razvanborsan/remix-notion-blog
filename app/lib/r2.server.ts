@@ -28,12 +28,6 @@ export async function uploadFile({
   filename: string;
   key: string;
 }) {
-  // const file = Bun.file(filename);
-
-  // const fileBuffer = await file.arrayBuffer();
-  // const newBloby = new Blob([filename], { type: "text/html" });
-  // console.log("file buffer", newBloby);
-
   const command = new PutObjectCommand({
     Bucket: BUCKET_NAME,
     Key: key,

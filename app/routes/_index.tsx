@@ -11,6 +11,7 @@ import {
 import {
   Card,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
@@ -113,6 +114,11 @@ export default function Index() {
                   <CardTitle>{post.title}</CardTitle>
                   <CardDescription>{post.abstract}</CardDescription>
                 </CardHeader>
+                <CardFooter>
+                  {post.publishDate} • {post.readingTime}{" "}
+                  {post.readingTime === 1 ? "min" : "mins"} • {post.wordCount}{" "}
+                  words
+                </CardFooter>
               </Card>
             </a>
           ))}

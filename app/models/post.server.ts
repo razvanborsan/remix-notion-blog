@@ -4,6 +4,7 @@ import type { BlogPost, Tag } from "~/types/BlogPost";
 import { blogPostSchema } from "~/types/BlogPost";
 import notion from "~/lib/notion";
 import type { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
+import invariant from "tiny-invariant";
 
 export async function sanitizePosts(
   response: QueryDatabaseResponse
@@ -19,6 +20,9 @@ export async function sanitizePosts(
       const abstract = item.properties?.abstract?.rich_text?.[0].plain_text;
       const url = item.properties?.slug?.rich_text?.[0]?.plain_text;
       const publishDate = item.properties?.date?.date?.start;
+      const lastEdited = item.last_edited_time;
+      const readingTime = item.properties?.["time-to-read"]?.formula?.number;
+      const wordCount = item.properties?.["word-count"]?.number;
 
       return blogPostSchema.parse({
         id: item.id,
@@ -26,8 +30,11 @@ export async function sanitizePosts(
         slug: slug,
         tags: tags,
         abstract: abstract,
+        wordCount: wordCount,
+        readingTime: readingTime,
         url: `/posts/${url}`,
         publishDate: publishDate,
+        lastEdited: lastEdited,
       });
     })
   );
@@ -84,7 +91,7 @@ export async function getTags(): Promise<Tag[]> {
   return Array.from(tags.values());
 }
 
-export const getPost = async (slug: string) => {
+export const getPost = async (slug: string): Promise<BlogPost> => {
   const command = new GetObjectCommand({
     Bucket: "remix-notion-blog",
     Key: `${slug}.mdx`,
@@ -93,11 +100,25 @@ export const getPost = async (slug: string) => {
   try {
     const response = await S3.send(command);
     const str = await response.Body?.transformToString();
-    console.log(str);
 
-    return str;
+    const rawPost = await notion.databases.query({
+      database_id: process.env.NOTION_DATABASE_ID || "",
+      filter: {
+        property: "slug",
+        rich_text: {
+          equals: slug,
+        },
+      },
+    });
+
+    const post = await sanitizePosts(rawPost);
+    invariant(post.length === 1, "post.length !== 1");
+    return {
+      ...post[0],
+      content: str,
+    };
   } catch (err) {
     console.error(err);
-    return "";
+    throw err;
   }
 };

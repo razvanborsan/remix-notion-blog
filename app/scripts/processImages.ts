@@ -8,6 +8,8 @@ import type { ImageUpload } from "~/lib/r2.server";
 import { uploadFile, uploadImage } from "~/lib/r2.server";
 import { getPublicPosts } from "~/models/post.server";
 import invariant from "tiny-invariant";
+import notion from "~/lib/notion";
+import type { UpdatePageResponse } from "@notionhq/client/build/src/api-endpoints";
 
 function extractImageKey(imageUrl: string): string {
   const url = new URL(imageUrl);
@@ -30,7 +32,9 @@ export async function createPostsMarkdown(posts: BlogPost[]) {
   for (const post of posts) {
     const mdBlocks = await n2m.pageToMarkdown(post.id);
 
-    const promises: Promise<PutObjectCommandOutput | undefined>[] = [];
+    const promises: Promise<
+      PutObjectCommandOutput | UpdatePageResponse | void
+    >[] = [];
     const updatedBlocks: MdBlock[] = mdBlocks.map((block) => {
       if (block.type === "image") {
         const imageUrl = extractHttpsLink(block.parent);
@@ -57,14 +61,29 @@ export async function createPostsMarkdown(posts: BlogPost[]) {
     const mdString = n2m.toMarkdownString(updatedBlocks);
 
     if (typeof mdString?.parent === "string") {
-      await uploadFile({ filename: mdString.parent, key: `${post.slug}.mdx` });
+      const words = mdString.parent.split(/\s+/).length;
+      const promiseUpdateCount = notion.pages.update({
+        page_id: post.id,
+        properties: {
+          "word-count": {
+            number: words,
+          },
+        },
+      });
+      const promiseUploadFile = uploadFile({
+        filename: mdString.parent,
+        key: `${post.slug}.mdx`,
+      });
+
+      promises.push(promiseUpdateCount);
+      promises.push(promiseUploadFile);
     }
 
     await Promise.all(promises);
   }
 }
 
-getPublicPosts().then((posts) => {
+getPublicPosts().then(async (posts) => {
   try {
     createPostsMarkdown(posts).then(() => {
       console.log("Done! All pages have been created. 🎉");
