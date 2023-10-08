@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
 import { marked } from "marked";
@@ -13,7 +13,7 @@ export function headers() {
   };
 }
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   invariant(params?.slug, "No slug provided");
 
   const post = await getPost(params.slug);
@@ -27,7 +27,7 @@ export default function PostRoute() {
   const { html } = useLoaderData<typeof loader>();
 
   return (
-    <main className="mx-auto max-w-[960px] p-4 prose prose-lg">
+    <main className="mx-auto max-w-[960px] p-10 prose prose-lg">
       <div dangerouslySetInnerHTML={{ __html: html }} />
     </main>
   );

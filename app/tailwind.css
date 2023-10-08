@@ -3,11 +3,11 @@
 @tailwind utilities;
 @layer base {
   body {
-    font-family: "kandin", Arial, sans-serif;
+    font-family: open-sans, Arial, sans-serif;
     font-weight: 400;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.6;
-    color: #000;
+    color: #37352f; /* Default Notion text color */
   }
 
   h1,
@@ -16,23 +16,41 @@
   h4,
   h5,
   h6 {
-    font-family: "open-sans", Arial, sans-serif;
+    font-family: proxima-soft, Arial, sans-serif;
     font-weight: 700;
     margin-bottom: 0.75rem;
   }
 
+  h1 {
+    font-size: 2.25rem;
+  }
+  h2 {
+    font-size: 1.875rem;
+  }
+  h3 {
+    font-size: 1.5rem;
+  }
+  h4 {
+    font-size: 1.25rem;
+  }
+  h5 {
+    font-size: 1rem;
+  }
+  h6 {
+    font-size: 0.875rem;
+  }
+
   a {
-    color: #3498db; /* Change to your preferred link color */
+    color: #3498db; /* Light blue for links */
     text-decoration: none;
     transition: color 0.2s ease-in-out;
   }
   a:hover {
-    color: #2980b9; /* Change to your preferred link hover color */
+    color: #2980b9; /* Darker shade of blue when hovering */
   }
 
   p {
-    margin-bottom: 1.25rem;
-
+    margin-bottom: 1rem;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -52,7 +70,13 @@
   /* Lists */
   ul,
   ol {
-    list-style: none;
+    list-style: disc outside;
+    padding: 0 0 0 2rem;
+    margin-bottom: 2rem;
+  }
+  ul li,
+  ol li {
+    padding: 0.25rem 0;
   }
 
   /* Preformatted text/code */
@@ -61,25 +85,5 @@
     padding: 1rem;
     border-radius: 4px;
     font-size: 14px;
-  }
-}
-
-/* General Layout */
-@layer base {
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-
-  main {
-    padding: 20px;
-  }
-
-  footer {
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
   }
 }
